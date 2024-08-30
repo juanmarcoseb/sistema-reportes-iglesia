@@ -3,11 +3,33 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const app = express();
 const Reporte = require('./reporte');
+const Joi = require('joi');
+const schemaReporte = Joi.object({
+    fecha: Joi.date().required(),
+    horaInicio: Joi.string().required(),
+    horaFin: Joi.string().required(),
+    profecias: Joi.number().integer().min(0).required(),
+    predicador: Joi.string().required(),
+    tema: Joi.string().required(),
+    asistencia: Joi.number().integer().min(0).required(),
+    fluyo: Joi.boolean().required(),
+    liberacion: Joi.boolean().required(),
+    convertidos: Joi.boolean().required(),
+    fueraDeLoNormal: Joi.string().required()
+});
 
 
 // Configuración de Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Manejo de errores de JSON no válido
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res.status(400).send('Error: JSON no válido.');
+    }
+    next();
+});
 
 // Conectar a la base de datos MongoDB
 mongoose.connect('mongodb+srv://juanmarcoseb:kNBQdmVPamlVjYgo@cluster0.86xyl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -101,4 +123,35 @@ app.delete('/reportes/:id', async (req, res) => {
     }
 });
 
+//Validar error al crear reporte
+app.post('/reporte', async (req, res) => {
+    const { error } = schemaReporte.validate(req.body);
+    if (error) return res.status(400).send('Error de validación: ' + error.details[0].message);
 
+    const nuevoReporte = new Reporte(req.body);
+    try {
+        await nuevoReporte.save();
+        res.status(201).send('Reporte guardado exitosamente');
+    } catch (error) {
+        res.status(500).send('Error al guardar el reporte: ' + error.message);
+    }
+});
+
+//Validar error al actualizar reporte
+app.put('/reportes/:id', async (req, res) => {
+    const { error } = schemaReporte.validate(req.body);
+    if (error) return res.status(400).send('Error de validación: ' + error.details[0].message);
+
+    const { id } = req.params;
+    const datosActualizados = req.body;
+
+    try {
+        const reporteActualizado = await Reporte.findByIdAndUpdate(id, datosActualizados, { new: true });
+        if (!reporteActualizado) {
+            return res.status(404).send('Reporte no encontrado');
+        }
+        res.status(200).json(reporteActualizado);
+    } catch (error) {
+        res.status(500).send('Error al actualizar el reporte: ' + error.message);
+    }
+});
