@@ -46,3 +46,28 @@ app.get('/reportes', async (req, res) => {
     }
 });
 
+//Buscar reportes con filtros
+app.get('/reportes/buscar', async (req, res) => {
+    const { fecha, predicador, tema } = req.query; // Obtener parámetros de búsqueda desde la URL
+    const filtro = {};
+
+    // Agregar filtros condicionalmente
+    if (fecha) {
+        filtro.fecha = new Date(fecha);
+    }
+    if (predicador) {
+        filtro.predicador = predicador;
+    }
+    if (tema) {
+        filtro.tema = tema;
+    }
+
+    try {
+        const reportesFiltrados = await Reporte.find(filtro);
+        res.status(200).json(reportesFiltrados);
+    } catch (error) {
+        res.status(500).send('Error al buscar los reportes: ' + error.message);
+    }
+});
+
+
