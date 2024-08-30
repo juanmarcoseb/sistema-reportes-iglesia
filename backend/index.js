@@ -70,4 +70,35 @@ app.get('/reportes/buscar', async (req, res) => {
     }
 });
 
+//Actualizar reporte existente
+app.put('/reportes/:id', async (req, res) => {
+    const { id } = req.params;
+    const datosActualizados = req.body;
+
+    try {
+        const reporteActualizado = await Reporte.findByIdAndUpdate(id, datosActualizados, { new: true });
+        if (!reporteActualizado) {
+            return res.status(404).send('Reporte no encontrado');
+        }
+        res.status(200).json(reporteActualizado);
+    } catch (error) {
+        res.status(500).send('Error al actualizar el reporte: ' + error.message);
+    }
+});
+
+//Eliminar reporte existente
+app.delete('/reportes/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const reporteEliminado = await Reporte.findByIdAndDelete(id);
+        if (!reporteEliminado) {
+            return res.status(404).send('Reporte no encontrado');
+        }
+        res.status(200).send('Reporte eliminado exitosamente');
+    } catch (error) {
+        res.status(500).send('Error al eliminar el reporte: ' + error.message);
+    }
+});
+
 
