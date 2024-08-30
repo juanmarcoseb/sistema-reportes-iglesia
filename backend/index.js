@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const app = express();
+const Reporte = require('./reporte');
+
 
 // Configuración de Body Parser
 app.use(bodyParser.json());
@@ -22,3 +24,25 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
+
+//Manejar las solicitudes de creación de reportes
+app.post('/reporte', async (req, res) => {
+    const nuevoReporte = new Reporte(req.body);
+    try {
+        await nuevoReporte.save();
+        res.status(201).send('Reporte guardado exitosamente');
+    } catch (error) {
+        res.status(400).send('Error al guardar el reporte: ' + error.message);
+    }
+});
+
+//Obtener todos los reportes
+app.get('/reportes', async (req, res) => {
+    try {
+        const reportes = await Reporte.find({});
+        res.status(200).json(reportes);
+    } catch (error) {
+        res.status(500).send('Error al obtener los reportes: ' + error.message);
+    }
+});
+
