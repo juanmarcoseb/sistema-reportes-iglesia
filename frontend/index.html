@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reportes Iglesia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte Diario para Obreros</h1>
+        <form id="reporteForm">
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required><br>
+
+            <label for="horaInicio">Hora de Inicio:</label>
+            <input type="time" id="horaInicio" name="horaInicio" required><br>
+
+            <label for="horaFin">Hora de Finalización:</label>
+            <input type="time" id="horaFin" name="horaFin" required><br>
+
+            <label for="profecias">Cantidad de Profecías:</label>
+            <input type="number" id="profecias" name="profecias" required><br>
+
+            <label for="predicador">Predicador:</label>
+            <input type="text" id="predicador" name="predicador" required><br>
+
+            <label for="tema">Tema:</label>
+            <input type="text" id="tema" name="tema" required><br>
+
+            <label for="asistencia">Asistencia:</label>
+            <input type="number" id="asistencia" name="asistencia" required><br>
+
+            <label for="fluyo">Fluyó:</label>
+            <select id="fluyo" name="fluyo" required>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+            </select><br>
+
+            <label for="liberacion">Hubo Liberación:</label>
+            <select id="liberacion" name="liberacion" required>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+            </select><br>
+
+            <label for="convertidos">Hubo Convertidos:</label>
+            <select id="convertidos" name="convertidos" required>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+            </select><br>
+
+            <label for="fueraDeLoNormal">Algo fuera de lo normal:</label>
+            <textarea id="fueraDeLoNormal" name="fueraDeLoNormal"></textarea><br>
+
+            <button type="submit">Guardar Reporte</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
